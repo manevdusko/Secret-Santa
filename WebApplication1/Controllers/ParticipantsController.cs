@@ -19,9 +19,10 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Participants
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            return View(await _context.Participants.ToListAsync());
+           
+            return View(await _context.Participants.Where(x => x.Host == id).ToListAsync());
         }
 
         // GET: Participants/Details/5
@@ -43,8 +44,9 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Participants/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
+            ViewBag.Message = id;
             return View();
         }
 
@@ -65,18 +67,19 @@ namespace WebApplication1.Controllers
         }
 
         // GET: Participants/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+             if (id == null)
+             {
+                 return NotFound();
+             }
 
-            var participants = await _context.Participants.FindAsync(id);
-            if (participants == null)
-            {
-                return NotFound();
-            }
+             var participants = await _context.Participants.FindAsync(id);
+             if (participants == null)
+             {
+                 return NotFound();
+             }
+
             return View(participants);
         }
 

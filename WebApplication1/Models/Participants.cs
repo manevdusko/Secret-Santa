@@ -8,6 +8,8 @@ namespace WebApplication1.Models
         [Key]
         public int Id { get; set; }
 
+        public int Host { get; set; }
+
         [DisplayName("Име")]
         public String Name { get; set; }
 
@@ -17,11 +19,19 @@ namespace WebApplication1.Models
         [DisplayName("Порака")]
         public String message { get; set; }
         public Participants() { }
-        public Participants(String name, String email, String message)
+        public Participants(String name, String email, String message, int Host)
         {
             this.email = email;
             this.message = message;
             this.Name = name;
+            this.Host = Host;
+        }
+        public Participants(String name, String email, int Host)
+        {
+            this.email = email;
+            this.message = "Домаќин";
+            this.Name = name;
+            this.Host = Host;
         }
     }
 }
