@@ -29,8 +29,8 @@
             </div> 
             <div class="form-group">
                 <label asp-for="Host" class="control-label"></label>
-                <input asp-for="Host" class="form-control" />
-                <p>@ViewBag.Message</p>
+                <input asp-for="Host" class="form-control" value="@ViewBag.Message" disabled/>
+ 
                 <span asp-validation-for="Host" class="text-danger"></span>
             </div>
             <div class="form-group">

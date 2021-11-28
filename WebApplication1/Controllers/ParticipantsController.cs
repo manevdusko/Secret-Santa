@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,6 @@ namespace WebApplication1.Controllers
         // GET: Participants
         public async Task<IActionResult> Index(int? id)
         {
-           
             return View(await _context.Participants.Where(x => x.Host == id).ToListAsync());
         }
 
@@ -57,11 +57,25 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,email,message")] Participants participants)
         {
-            if (ModelState.IsValid)
+            Debug.WriteLine("NOR WE ARE HERE");
+            var p = await _context.Participants.FindAsync(participants.Id);
+            if (participants == null)
             {
-                _context.Add(participants);
+                Debug.WriteLine("NOT WE ARE HERE");
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(participants);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Participants", new { id = participants.Id });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("WE ARE HERE");
+                _context.Participants.Add(new Participants(participants.Name, participants.email, participants.message, participants.Id));
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Participants", new { id = participants.Id });
             }
             return View(participants);
         }

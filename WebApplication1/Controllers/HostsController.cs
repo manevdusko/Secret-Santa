@@ -59,8 +59,8 @@ namespace WebApplication1.Controllers
             {
                 _context.Add(host);
                 await _context.SaveChangesAsync();
-             /*   _context.Participants.Add(new Participants(host.Name, host.email, host.Id));
-                _context.SaveChanges();*/
+                _context.Participants.Add(new Participants(host.Name, host.email, host.Id));
+                _context.SaveChanges();
                 return RedirectToAction("Index","Participants", new { id = host.Id });
             }
             return View(host);
