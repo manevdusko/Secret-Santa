@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Aspose.Email.Clients;
+using Aspose.Email.Clients.Smtp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,61 @@ namespace WebApplication1.Controllers
     public class ParticipantsController : Controller
     {
         private readonly SecretSantaContext _context;
+
+        private string smtpFrom = "dushkomanev@outlook.com";
+        private string SMTPhost = "smtp.office365.com";
+        private int SMTPport = 587;
+
+        private string username = "dushkomanev@outlook.com";
+        private string password = "TestPassword1!";
+
+
+        private void sendMail(string to, string title, string body)
+        {
+            try
+            {
+                //nova poraka
+                Aspose.Email.MailMessage EmailMessage = new Aspose.Email.MailMessage();
+
+                //popolnuvanje na porakata
+                EmailMessage.Subject = title;
+                EmailMessage.To = to;
+                EmailMessage.Body = body;
+                EmailMessage.From = smtpFrom;
+
+                //Inicijalizacija na smtp klient
+                SmtpClient SMTPEmailClient = new SmtpClient();
+
+                //postavuvanje na postavkite na smtp
+                SMTPEmailClient.Host = SMTPhost;
+                SMTPEmailClient.Username = username;
+                SMTPEmailClient.Password = password;
+                SMTPEmailClient.Port = SMTPport;
+                SMTPEmailClient.SecurityOptions = SecurityOptions.SSLExplicit;
+
+                //prakjanje na mailot
+                SMTPEmailClient.Send(EmailMessage);
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message);
+            }
+        }
+
+
+
+        public async Task<IActionResult> Invite(int? id)
+        {
+            List<Participants> participants = await _context.Participants.Where(x => x.Host == id).ToListAsync();
+            var p = await _context.Participants.FindAsync(id);
+            foreach (Participants participant in participants)
+            {
+                sendMail(participant.email, "Покана за учество во Secret Santa", "Вие сте поканети за учество во Secret Santa, организатое е " + p.Name + ". Кликнете <a href='google.com'>тука</a> за да видите со кого ќе учествувате ");
+            }
+
+            return RedirectToAction("Index", "Participants", new { id = id });
+        }
+
 
         public ParticipantsController(SecretSantaContext context)
         {
@@ -59,7 +116,7 @@ namespace WebApplication1.Controllers
         {
             Debug.WriteLine("NOR WE ARE HERE");
             var p = await _context.Participants.FindAsync(participants.Id);
-            if (participants == null)
+            if (p == null) //participants
             {
                 Debug.WriteLine("NOT WE ARE HERE");
 
