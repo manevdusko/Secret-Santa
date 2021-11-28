@@ -18,6 +18,9 @@ namespace WebApplication1.Models
 
         [DisplayName("Порака")]
         public String message { get; set; }
+
+        public int? buysTO { get; set; }
+        public int? receiveFrom { get; set; }
         public Participants() { }
         public Participants(String name, String email, String message, int Host)
         {
